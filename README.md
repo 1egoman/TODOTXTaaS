@@ -14,8 +14,12 @@ Reference: https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format
 Documentation
 ===
 
+Create
+---
+- `POST http://127.0.0.1:8000/list`
+
 Read
 ---
-`http://127.0.0.1:8000/lists.json`
-`http://127.0.0.1:8000/lists/@abc.json`
-`http://127.0.0.1:8000/lists/@abc/+def.json`
+- `GET http://127.0.0.1:8000/lists.json`
+- `GET http://127.0.0.1:8000/lists/@abc.json`
+- `GET http://127.0.0.1:8000/lists/@abc/+def.json`
