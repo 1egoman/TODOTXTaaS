@@ -1,14 +1,42 @@
 todotxt = (require "jsTodoTxt").TodoTxt
-list = require "../models/list"
+List = require "../models/list"
 _ = require "underscore"
 
-exports.create = (list) ->
-  null
+exports.create = (list, callback) ->
+  compiledList = todotxt.parse(list)[0]
+  compiledLista = {
+    "text": "milk",
+    "priority": [ ],
+    "complete": false,
+    "completed": false,
+    "date": "Sat Apr 11 2015 16:58:13 GMT-0400 (EDT)",
+    "contexts": [
+      "grocery"
+    ],
+    "projects": [ ]
+  }
+
+
+  # small issue: cannot put null into an array
+  compiledList.projects = [] if not compiledList.projects
+  compiledList.contexts = [] if not compiledList.contexts
+  compiledList.priority = [] if not compiledList.priority
+  compiledList.completed = false if typeof compiledList.completed isnt "boolean"
+  compiledList.date = "" if not compiledList.date
+
+  console.log compiledList
+
+  l = new List compiledList
+
+  l.save (err) ->
+    callback 
+      error: err
+      doc: compiledList
 
 
 # read operation
 exports.read = (selectors, callback) ->
-  list.find (err, elems) ->
+  List.find (err, elems) ->
     exports.select elems, selectors, (matches) ->
       callback matches
 

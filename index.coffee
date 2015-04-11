@@ -12,6 +12,17 @@ mongoose.connection.once 'open', () ->
   console.log("Connected To Mongo instance:", host)
 
 
+### CREATE ###
+
+
+# get all lists items
+app.post "/list/:query", (req, res) ->
+  list.create req.params.query, (err) ->
+    res.send err
+
+
+### READING ###
+
 # get all lists items
 app.get "/lists.json", (req, res) ->
   list.read [], (matches) ->
