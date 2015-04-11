@@ -38,8 +38,24 @@ exports.read = (selectors, callback) ->
       callback matches
 
 # update operation
-exports.update = (selector, item, callback) ->
-  null
+exports.update = (selectors, compiledList, callback) ->
+  projects = []
+  contexts = []
+
+  # sort projects and contexts
+  selectors.forEach (s) ->
+    projects.push s.slice(1) if s[0] is "+"
+    contexts.push s.slice(1) if s[0] is "@"
+
+  # remove un-needed elements
+  sl = 
+    projects: projects
+    contexts: contexts
+
+  # do the update
+  List.update sl, compiledList, (err, data) ->
+    callback data
+
 
 exports.delete = (selector, callback) ->
   null
