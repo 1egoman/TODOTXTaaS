@@ -4,18 +4,17 @@ _ = require "underscore"
 
 exports.create = (list, callback) ->
   compiledList = todotxt.parse(list)[0]
-  compiledLista = {
-    "text": "milk",
-    "priority": [ ],
-    "complete": false,
-    "completed": false,
-    "date": "Sat Apr 11 2015 16:58:13 GMT-0400 (EDT)",
-    "contexts": [
-      "grocery"
-    ],
-    "projects": [ ]
-  }
 
+  # stuff everthing back into array
+  compiledList = {
+    "text": compiledList.text,
+    "priority": compiledList.priority,
+    "complete": compiledList.complete,
+    "completed": compiledList.completed,
+    "date": compiledList.date,
+    "contexts": compiledList.contexts
+    "projects": compiledList.projects
+  }
 
   # small issue: cannot put null into an array
   compiledList.projects = [] if not compiledList.projects
@@ -23,8 +22,6 @@ exports.create = (list, callback) ->
   compiledList.priority = [] if not compiledList.priority
   compiledList.completed = false if typeof compiledList.completed isnt "boolean"
   compiledList.date = "" if not compiledList.date
-
-  console.log compiledList
 
   l = new List compiledList
 

@@ -14,7 +14,6 @@ mongoose.connection.once 'open', () ->
 
 ### CREATE ###
 
-
 # get all lists items
 app.post "/list/:query", (req, res) ->
   list.create req.params.query, (err) ->
