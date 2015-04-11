@@ -9,3 +9,13 @@ with todo.txt projects and contexts. Also, there probably should be a frontend o
 whole thing, ala bootstrap.
 
 Reference: https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format
+
+
+Documentation
+===
+
+Read
+---
+`http://127.0.0.1:8000/lists.json`
+`http://127.0.0.1:8000/lists/@abc.json`
+`http://127.0.0.1:8000/lists/@abc/+def.json`
