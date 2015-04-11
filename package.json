@@ -1,0 +1,28 @@
+{
+  "name": "todotxtaas",
+  "version": "1.0.0",
+  "description": "TODOTXTaaS ===",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.12.3",
+    "express-static": "^1.0.3",
+    "mongoose": "^4.0.1",
+    "mrtodotxt": "^0.1.0",
+    "sass-middleware": "0.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1egoman/todotxtaas.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/1egoman/todotxtaas/issues"
+  },
+  "homepage": "https://github.com/1egoman/todotxtaas",
+  "main": "index.coffee"
+}
