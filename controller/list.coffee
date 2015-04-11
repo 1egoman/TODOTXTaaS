@@ -1,6 +1,7 @@
 todotxt = (require "jsTodoTxt").TodoTxt
 List = require "../models/list"
 _ = require "underscore"
+fs = require "fs"
 
 exports.create = (list, callback) ->
   compiledList = todotxt.parse(list)[0]
@@ -31,34 +32,62 @@ exports.create = (list, callback) ->
       doc: compiledList
 
 
+cacheToTodoText = () ->
+  List.find (e, d) ->
+    a = _.map d, (d1) ->
+
+      c = _.map d1.contexts, (c) -> "@#{c}"
+      p = _.map d1.projects, (p) -> "@#{p}"
+
+      "#{d1.text or ''} #{c.join(' ')} #{p.join(' ')}".trim()
+    fs.writeFile "./todo.txt", a.join '\n', (err) ->
+      console.log err if err
+
 # read operation
-exports.read = (selectors, callback) ->
-  List.find (err, elems) ->
-    exports.select elems, selectors, (matches) ->
-      callback matches
+# exports.read = (selectors, callback) ->
+#   List.find (err, elems) ->
+#     exports.select elems, selectors, (matches) ->
+#       callback matches
 
-# update operation
-exports.update = (selectors, compiledList, callback) ->
-  projects = []
-  contexts = []
+exports.read = (id, callback) ->
+  cacheToTodoText()
+  if id
+    List.find {_id: id}, (e, r) ->
+      callback(e, r)
+  else
+    List.find callback
 
-  # sort projects and contexts
-  selectors.forEach (s) ->
-    projects.push s.slice(1) if s[0] is "+"
-    contexts.push s.slice(1) if s[0] is "@"
+# # update operation
+# exports.update = (selectors, compiledList, callback) ->
+#   projects = []
+#   contexts = []
 
-  # remove un-needed elements
-  sl = 
-    projects: projects
-    contexts: contexts
+#   # sort projects and contexts
+#   selectors.forEach (s) ->
+#     projects.push s.slice(1) if s[0] is "+"
+#     contexts.push s.slice(1) if s[0] is "@"
 
+#   # remove un-needed elements
+#   sl = 
+#     projects: projects
+#     contexts: contexts
+
+#   # do the update
+#   List.update sl, compiledList, (err, data) ->
+#     callback data
+
+exports.update = (id, compiledList, callback) ->
   # do the update
-  List.update sl, compiledList, (err, data) ->
+  List.update {_id: id}, compiledList, (err, data) ->
+    cacheToTodoText()
     callback data
 
 
-exports.delete = (selector, callback) ->
-  null
+exports.delete = (id, compiledList, callback) ->
+  # do the update
+  List.delete {_id: id}, compiledList, (err, data) ->
+    cacheToTodoText()
+    callback data
 
 
 # select lists by specifing "selectors"

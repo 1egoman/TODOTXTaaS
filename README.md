@@ -23,3 +23,9 @@ Read
 - `GET http://127.0.0.1:8000/lists.json`
 - `GET http://127.0.0.1:8000/lists/@abc.json`
 - `GET http://127.0.0.1:8000/lists/@abc/+def.json`
+
+Update
+---
+(put in body json with parts to update)
+- `PUT http://127.0.0.1:8000/lists/@abc.json`
+- `PUT http://127.0.0.1:8000/lists/@abc/+def.json`

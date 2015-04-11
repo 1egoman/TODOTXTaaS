@@ -26,25 +26,34 @@ app.post "/list/:query", (req, res) ->
 ### READING ###
 
 # get all lists items
-app.get "/lists.json", (req, res) ->
-  list.read [], (matches) ->
-    res.send matches
+app.get "/lists", (req, res) ->
+  list.read null, (err, d) ->
+    res.send
+      data: d,
+      err: err
+
+app.get "/lists/:id", (req, res) ->
+  list.read req.params.id, (err, d) ->
+    res.send
+      data: d,
+      err: err
 
 # get list items by selector
-app.get /lists\/[a-zA-Z0-9\+\@\/]*/gi, (req, res) ->
-  selectors = req.url.slice(7, -5).split "/"
+# app.get /lists\/[a-zA-Z0-9\+\@\/]*/gi, (req, res) ->
+#   selectors = req.url.slice(7, -5).split "/"
 
-  list.read selectors, (matches) ->
-    res.send matches
+#   list.read selectors, (matches) ->
+#     res.send matches
 
 ### UPDATE ###
 
-app.put "/lists.json", (req, res) ->
-  list.update [], req.body, (err) ->
+app.put "/lists/:id", (req, res) ->
+  list.update req.params.id, req.body, (err) ->
     res.send
       error: err
 
-app.put /lists\/[a-zA-Z0-9\+\@\/]*/gi, (req, res) ->
+### DELETE ###
+app.delete /lists\/[a-zA-Z0-9\+\@\/]*/gi, (req, res) ->
   selectors = req.url.slice(7, -5).split "/"
   list.update selectors, req.body, (err) ->
     res.send
