@@ -1,6 +1,7 @@
 var dates = [];
 
-$.getJSON("sampleData.json",function(response){
+$.getJSON("/items",function(response){
+  console.log("R", response)
   response.forEach(function(item){
     dates.push(item.completed.substring(0,10));
   });

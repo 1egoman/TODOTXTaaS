@@ -25,11 +25,24 @@ var color = d3.scale.ordinal()
 var dates = [];
 
 
-$.getJSON("newSampleData.json", function(response){
-  console.log(response.data);
+$.getJSON("/items", function(response){
+  // console.log(response.data);
 });
 
-$.getJSON("newSampleData.json",function(response){
+$.getJSON("/items",function(response){
+
+  r = $.map(response.data, function(a) {
+    console.log(a, a.date)
+    if (a.date) {
+      a.completed = a.date;
+    } else {
+      a.completed = null;
+    }
+
+    return a;
+  });
+
+  console.log(r)
 
   response.data.forEach(function(item){
     if (item.completed != null){
