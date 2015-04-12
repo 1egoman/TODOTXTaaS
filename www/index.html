@@ -14,6 +14,8 @@
           @<input type="text" ng-model="d.contexts" ng-change="updateItem(d)" />
 
           +<input type="text" ng-model="d.projects" ng-change="updateItem(d)" />
+
+          {{d.complete && d.date}}
         </li>
       </ul>
 
@@ -74,6 +76,7 @@
       };
 
       $scope.markItem = function(d) {
+        d.date = (new Date()).toString()
         $http({
           method: "put",
           url: "/items/"+d._id,
