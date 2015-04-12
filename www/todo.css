@@ -15,3 +15,7 @@ ul {
 .btn btn-defualt{
   margin: 50px;
 }
+
+.transp {
+  background: transparent;
+}

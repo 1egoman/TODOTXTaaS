@@ -3,12 +3,18 @@
     <link rel="stylesheet" type="text/css" href="todo.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <title>lists</title>
+    <style>
+      .transp {
+        background: transparent;
+        border: 0px;
+      }
+    </style>
   </head>
 
   <body ng-app="listsapp">
     <div class="container">
       <h1 class="title">TODOTXTaaS</h1>
-    <div ng-controller="listsController">
+    <div ng-controller="listsController" class="well well-lg clearfix">
       <div class="col-md-8">
       (projects and contexts are comma seperated)
     <a href="/todo.txt" target="_blank">todo.txt</a>
@@ -18,19 +24,20 @@
 
           <div style="width: 75px; display: inline-block;">{{formatDate(d.date)}}</div>
 
-          <input type="text" ng-model="d.text" ng-change="updateItem(d)" />
+          <input class="transp" type="text" ng-model="d.text" ng-change="updateItem(d)" />
 
-          @<input type="text" ng-model="d.contexts" ng-change="updateItem(d)" />
+          @<input class="transp" type="text" ng-model="d.contexts" ng-change="updateItem(d)" />
 
-          +<input type="text" ng-model="d.projects" ng-change="updateItem(d)" />
+          +<input class="transp" type="text" ng-model="d.projects" ng-change="updateItem(d)" />
 
         </li>
       </ul>
     </div>
 
     <div class="col-md-4">
-      <input type="text" ng-model="newItem"/>
-      <button ng-click="makeNew(newItem)">new</button>
+      <input class="form-control" type="text" ng-model="newItem"/>
+      <br/>
+      <button class="btn btn-primary" ng-click="makeNew(newItem)">new</button>
     </div>
   </div>
      </div>
