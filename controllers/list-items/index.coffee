@@ -22,8 +22,11 @@ sanitize = (obj) ->
 
 # show all todos in the list
 exports.index = (req, res) ->
-  res.setHeader "content-type", "text/plain"
-  res.send todotxt.render(todos)
+  List.find (err, data) ->
+    res.setHeader "content-type", "application/json"
+    res.send
+      data: data,
+      err: err
 
 exports.new = (req, res) ->
   res.send('new item')
@@ -48,11 +51,14 @@ exports.create = (req, res) ->
 # multiple selectors can be seperated by /s, like
 # `/items/@store/glue` -> `glue sticks @store`
 exports.show = (req, res) ->
-  params = req.url.toLowerCase().split("?")[0].split("/").slice(2)
-  matches = exports.select(params)
+  List.find (err, data) ->
+    params = req.url.toLowerCase().split("?")[0].split("/").slice(2)
+    matches = exports.select(params, data)
 
-  res.setHeader "content-type", "text/plain"
-  res.send todotxt.render(matches)
+    res.setHeader "content-type", "application/json"
+    res.send
+      data: matches,
+      err: err
 
 exports.edit = (req, res) ->
   res.send('edit item ' + req.params.item)
@@ -75,14 +81,20 @@ exports.update = (req, res) ->
 
 
   else if matches.length > 0
+    errors = []
+
     for item in matches
       todos[todos.indexOf(item)] = newItem
 
-    exports.writeChangesToDB todos, (err) ->
+      console.log item.text, newItem[0]
+      List.update {text: item.text}, sanitize newItem, (err) ->
+        errors.push err
+
       res.send {
         status: "OK",
         method: "update",
         msg: "Updated new todo item to: #{newItem}"
+        errors: errors
       }
 
   else
@@ -97,7 +109,7 @@ exports.destroy = (req, res) ->
   res.send('destroy item ' + req.params.item)
 
 # select a new item from an array of selectors passed
-exports.select = (selectors) ->
+exports.select = (selectors, todos=@todos) ->
   matches = todos
 
   for selector in selectors
