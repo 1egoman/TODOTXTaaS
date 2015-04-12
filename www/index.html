@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <title>lists</title>
+  </head>
+  <body ng-app="listsapp">
+
+    <div ng-controller="listsController">
+      <ul>
+        <li ng-repeat="d in all">
+          <input type="checkbox" ng-model="d.complete" ng-change="markItem(d)" />
+
+          <input type="text" ng-model="d.text" ng-change="updateItem(d)" />
+
+          @<input type="text" ng-model="d.contexts" ng-change="updateItem(d)" />
+
+          +<input type="text" ng-model="d.projects" ng-change="updateItem(d)" />
+        </li>
+      </ul>
+
+      <input type="text" ng-model="newItem"/>
+      <button ng-click="makeNew(newItem)">new</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
+    <script>
+    lists = angular.module("listsapp", {})
+    lists.controller("listsController", function($http, $scope) {
+
+      $scope.stringify = function(a) {
+        return JSON.stringify(a)
+      }
+
+      $scope.get = function() {
+        $http({
+          "method": "get",
+          "url": "/items"
+        }).success(function(data) {
+          $scope.all = data.data;
+        });
+      };
+      $scope.get();
+
+      $scope.makeNew = function(n) {
+        $http({
+          "method": "post",
+          "url": "/items",
+          "data": {data: n}
+        }).success(function(d) {
+          console.log("cool")
+          $scope.get();
+        });
+
+        setTimeout(function() {
+          location.reload();
+        },1500)
+      };
+
+      $scope.updateItem = function(d) {
+        if (typeof d.contexts === "string") {
+          d.contexts = d.contexts.split(",")
+        }
+        if (typeof d.projects === "string") {
+          d.projects = d.projects.split(",")
+        }
+        console.log(d)
+
+        $http({
+          method: "put",
+          url: "/items/"+d._id,
+          data: d
+        }).success(function(d) {
+          console.log("update", d)
+        });
+      };
+
+      $scope.markItem = function(d) {
+        $http({
+          method: "put",
+          url: "/items/"+d._id,
+          data: {complete: d.complete}
+        }).success(function(d) {
+          console.log("update", d)
+        });
+      };
+
+
+    })
+    </script>
+  </body>
+</html>

@@ -10,6 +10,8 @@ whole thing, ala bootstrap.
 
 Reference: https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format
 
+NOTE: date is only set once items are completed
+
 ### GET /items
 Outputs the full todo.txt file.
 ```
