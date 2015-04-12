@@ -53,25 +53,11 @@ POST /items
 }
 ```
 
-### PUT /items/:selector
-Updates all items that match the selector(s). These can take the form of:
-  - `@context` - search for all items with a context of `@context`
-  - `+project` - search for all items with a project of `+project`
-  - `text` - search in the item body for `text` (not case sensitive)
+### PUT /items/:id
+updates item with the specified id (the `_id`)
 
-The request body should contain the list item in todo.txt format to replace
-anything items identified by the selectors.
-
-```
-GET /items/@phone/mom
-(A) Thank Dad for the meatballs @phone
-
-{
-  "status": "OK",
-  "method": "update",
-  "msg": "Updated todo item: Thank Dad for the meatballs @phone"
-}
-```
+### DELETE /items/:id
+deletes item with the specified id (the `_id`)
 
 ### DELETE /items/:selector
   - destroy (Not implemented yet)
