@@ -1,6 +1,6 @@
 app = (require "express")()
 bodyParser = require "body-parser"
-app.use(bodyParser.text());
+app.use(bodyParser.json());
 
 # connect to db
 mongoose = require "mongoose"
@@ -19,7 +19,8 @@ app.get("/items", listItems.index)
 # app.get("/items/:item/edit", listItems.edit)
 app.get("/items/([\w\/\@\+]*)", listItems.show)
 app.post("/items", listItems.create)
-app.put("/items/([\w\/\@\+]*)", listItems.update)
+# app.put("/items/([\w\/\@\+]*)", listItems.update)
+app.put("/items/:id", listItems.update)
 app.delete("/items/:item", listItems.destroy)
 
 # listen for server response
