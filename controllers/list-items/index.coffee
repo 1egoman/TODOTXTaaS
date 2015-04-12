@@ -75,6 +75,8 @@ exports.update = (req, res) ->
   delete body.__v
   if body.complete
     body.date = (new Date()).toString()
+  else
+    body.date = null
 
   List.update {_id: req.params.id}, body, (err, d) ->
     exports.writeChangesToDB()
@@ -143,7 +145,7 @@ exports.writeChangesToDB = (callback) ->
         allCount += 1
     console.log "allcount", allCount/todos.length
 
-    # curl https://api.spark.io/v1/devices/54ff6c06678574921460267/analogWrite -d access_token=6b2b3f3905ffab3102609d4298a9558478e05199 -d params=A0,100
+    # curl https://api.spark.io/v1/devices/54ff6c06678574921460267/analogWrite -d access_token=57e9b03711f56cdd56c6e2200c5cf8f778b0d4c5 -d params=A0,100
     request 
       url: "https://api.spark.io/v1/devices/54ff6c066678574921460267/analogWrite"
       params: 
