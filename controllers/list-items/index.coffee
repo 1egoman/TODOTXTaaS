@@ -74,7 +74,8 @@ exports.update = (req, res) ->
   delete body.__v
   if body.complete
     body.date = (new Date()).toString()
-  List.update req.params.id, body, (err, d) ->
+
+  List.update {_id: req.params.id}, body, (err, d) ->
     exports.writeChangesToDB()
     res.send
       data: d
