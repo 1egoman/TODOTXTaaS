@@ -13,7 +13,7 @@ mongoose.connection.once 'open', () ->
 
 # resources
 listItems = require './controllers/list-items'
-listItems.populateCache();
+# listItems.populateCache();
 app.get("/items", listItems.index)
 # app.get("/items/new", listItems.new)
 # app.get("/items/:item/edit", listItems.edit)
