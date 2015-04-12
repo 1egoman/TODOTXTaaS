@@ -11,6 +11,8 @@ mongoose.connection.on('error', console.error.bind(console, 'db error:'))
 mongoose.connection.once 'open', () ->
   console.log("Connected To Mongo instance:", host)
 
+app.use require("express-static")(__dirname+"/www")
+
 # resources
 listItems = require './controllers/list-items'
 # listItems.populateCache();

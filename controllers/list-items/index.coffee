@@ -34,7 +34,7 @@ exports.new = (req, res) ->
 
 # add new todo item to list
 exports.create = (req, res) ->
-  item = todotxt.parse req.body
+  item = todotxt.parse req.body.data
   todos.push item
 
   i = new List sanitize(item[0])
@@ -70,9 +70,11 @@ exports.edit = (req, res) ->
 # not what I wanted, but tough.
 exports.update = (req, res) ->
   body = req.body
+  delete body._id
+  delete body.__v
   if body.complete
     body.date = (new Date()).toString()
-  List.update req.param.id, body, (err, d) ->
+  List.update req.params.id, body, (err, d) ->
     exports.writeChangesToDB()
     res.send
       data: d
