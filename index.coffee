@@ -1,3 +1,4 @@
+fs = require "fs"
 app = (require "express")()
 bodyParser = require "body-parser"
 app.use(bodyParser.json());
@@ -24,6 +25,11 @@ app.post("/items", listItems.create)
 # app.put("/items/([\w\/\@\+]*)", listItems.update)
 app.put("/items/:id", listItems.update)
 app.delete("/items/:item", listItems.destroy)
+
+app.get "/todo.txt", (req, res) ->
+  fs.readFile "./todo.txt", 'utf8', (err, data) ->
+    res.setHeader "content-type", "text/plain"
+    res.send data
 
 # listen for server response
 app.listen(process.env.PORT || 8005)

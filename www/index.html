@@ -5,6 +5,8 @@
   <body ng-app="listsapp">
 
     <div ng-controller="listsController">
+      <h1>TODOTXTaaS</h1>
+      (projects and contexts are comma seperated)
       <ul>
         <li ng-repeat="d in all">
           <input type="checkbox" ng-model="d.complete" ng-change="markItem(d)" />
@@ -21,6 +23,10 @@
 
       <input type="text" ng-model="newItem"/>
       <button ng-click="makeNew(newItem)">new</button>
+
+      <p>
+        Data visualization here
+      </p>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
