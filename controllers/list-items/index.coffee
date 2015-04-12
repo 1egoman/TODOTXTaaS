@@ -23,7 +23,7 @@ exports.new = (req, res) ->
 exports.create = (req, res) ->
   item = todotxt.parse req.body
   todos.push item
-  exports.writeChangesToFile todos, (err) ->
+  exports.writeChangesToDB todos, (err) ->
     res.send {
       status: "OK",
       method: "create",
@@ -64,7 +64,7 @@ exports.update = (req, res) ->
     for item in matches
       todos[todos.indexOf(item)] = newItem
 
-    exports.writeChangesToFile todos, (err) ->
+    exports.writeChangesToDB todos, (err) ->
       res.send {
         status: "OK",
         method: "update",
@@ -109,9 +109,10 @@ exports.select = (selectors) ->
 
   matches
 
-# update todo.txt file from local cache
-exports.writeChangesToFile = (todos, callback) ->
+# update database and todo.txt file from local cache
+exports.writeChangesToDB = (todos, callback) ->
   filename = process.env.TODOTXTFILENAME or "todo.txt"
+  # also, write to file
   fs.writeFile filename, todotxt.render(todos), (err) ->
     callback err
 
