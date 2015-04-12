@@ -12,7 +12,7 @@
         <li ng-repeat="d in all">
           <input type="checkbox" ng-model="d.complete" ng-change="markItem(d)" />
 
-          <div style="width: 75px; display: inline-block;">{{d.complete && formatDate(d.date)}}</div>
+          <div style="width: 75px; display: inline-block;">{{formatDate(d.date)}}</div>
 
           <input type="text" ng-model="d.text" ng-change="updateItem(d)" />
 
@@ -42,7 +42,11 @@
 
       $scope.formatDate = function(d) {
         console.log(new Date(d).toISOString().substring(0, 10))
-        return new Date(d).toISOString().substring(0, 10)
+        if (d) {
+          return new Date(d).toISOString().substring(0, 10)
+        } else {
+          return null;
+        }
       }
 
       $scope.get = function() {
@@ -89,7 +93,11 @@
       };
 
       $scope.markItem = function(d) {
-        d.date = (new Date()).toString()
+        if (d.complete) {
+          d.date = (new Date()).toString()
+        } else {
+          d.date = null
+        }
         $http({
           method: "put",
           url: "/items/"+d._id,
