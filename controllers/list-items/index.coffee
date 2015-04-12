@@ -1,5 +1,7 @@
 fs = require "fs"
 _ = require "underscore"
+List = require "../../models/list"
+
 todotxt = (require "jstodotxt").TodoTxt
 todos = []
 
@@ -10,6 +12,13 @@ todos = []
 # GET     /items/:item/edit  ->  edit
 # PUT     /items/:item       ->  update
 # DELETE  /items/:item       ->  destroy
+
+# pull out all the functions in the query that mongo cannot deal with
+sanitize = (obj) ->
+  for k,v of obj
+    if typeof v is "function"
+      delete obj[k]
+  obj
 
 # show all todos in the list
 exports.index = (req, res) ->
@@ -23,12 +32,17 @@ exports.new = (req, res) ->
 exports.create = (req, res) ->
   item = todotxt.parse req.body
   todos.push item
-  exports.writeChangesToDB todos, (err) ->
-    res.send {
-      status: "OK",
-      method: "create",
-      msg: "Added new todo item: #{item}"
-    }
+
+  i = new List sanitize(item[0])
+  i.save (err1) ->
+    exports.writeChangesToDB todos, (err) ->
+      res.send {
+        status: "OK",
+        method: "create",
+        msg: "Added new todo item: #{item}"
+        err: err1
+      }
+
 
 # search by project or context
 # multiple selectors can be seperated by /s, like

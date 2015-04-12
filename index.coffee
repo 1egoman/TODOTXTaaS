@@ -2,6 +2,15 @@ app = (require "express")()
 bodyParser = require "body-parser"
 app.use(bodyParser.text());
 
+# connect to db
+mongoose = require "mongoose"
+host = process.env.DB or "mongodb://dev:dev@ds061751.mongolab.com:61751/todotxtaas"
+
+mongoose.connect host
+mongoose.connection.on('error', console.error.bind(console, 'db error:'))
+mongoose.connection.once 'open', () ->
+  console.log("Connected To Mongo instance:", host)
+
 # resources
 listItems = require './controllers/list-items'
 listItems.populateCache();
