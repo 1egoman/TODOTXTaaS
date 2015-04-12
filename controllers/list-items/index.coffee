@@ -16,7 +16,7 @@ todos = []
 # pull out all the functions in the query that mongo cannot deal with
 sanitize = (obj) ->
   for k,v of obj
-    if typeof v is "function"
+    if typeof v is "function" or k[0] is "_"
       delete obj[k]
   obj
 
@@ -65,48 +65,20 @@ exports.edit = (req, res) ->
 
 # update to the body content using selectors
 # to pick what to update
+#
+# not what I wanted, but tough.
 exports.update = (req, res) ->
-  newItem = todotxt.parse req.body
-
-  params = req.url.toLowerCase().split("?")[0].split("/").slice(2)
-  matches = exports.select(params)
-
-  # warn user
-  if matches.length > 5 and not "?confirm" in req.url
-    res.send {
-      status: "ERR",
-      method: "update",
-      msg: "Hmm, this query would update #{matches.length} items - add ?confirm to allow this."
-    }
-
-
-  else if matches.length > 0
-    errors = []
-
-    for item in matches
-      todos[todos.indexOf(item)] = newItem
-
-      console.log item.text, newItem[0]
-      List.update {text: item.text}, sanitize newItem, (err) ->
-        errors.push err
-
-      res.send {
-        status: "OK",
-        method: "update",
-        msg: "Updated new todo item to: #{newItem}"
-        errors: errors
-      }
-
-  else
-    res.send {
-      status: "ERR",
-      method: "update",
-      msg: "#{params.join('/')} doesn't match anything."
-    }
+  List.update req.param.id, req.body, (err, d) ->
+    res.send
+      data: d
+      error: err
 
 
 exports.destroy = (req, res) ->
-  res.send('destroy item ' + req.params.item)
+  List.delete req.param.item, req.body, (err, d) ->
+    res.send
+      data: d
+      error: err
 
 # select a new item from an array of selectors passed
 exports.select = (selectors, todos=@todos) ->
