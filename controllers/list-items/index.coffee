@@ -23,7 +23,6 @@ sanitize = (obj) ->
 # show all todos in the list
 exports.index = (req, res) ->
   List.find (err, data) ->
-    todos = data
 
     res.setHeader "content-type", "application/json"
     res.send
@@ -57,8 +56,6 @@ exports.show = (req, res) ->
     params = req.url.toLowerCase().split("?")[0].split("/").slice(2)
     matches = exports.select(params, data)
 
-    todos = data
-
     res.setHeader "content-type", "application/json"
     res.send
       data: matches,
@@ -72,7 +69,10 @@ exports.edit = (req, res) ->
 #
 # not what I wanted, but tough.
 exports.update = (req, res) ->
-  List.update req.param.id, req.body, (err, d) ->
+  body = req.body
+  if body.complete
+    body.date = (new Date()).toString()
+  List.update req.param.id, body, (err, d) ->
     exports.writeChangesToDB()
     res.send
       data: d
@@ -81,6 +81,7 @@ exports.update = (req, res) ->
 
 exports.destroy = (req, res) ->
   List.delete req.param.item, req.body, (err, d) ->
+    exports.writeChangesToDB()
     res.send
       data: d
       error: err
@@ -123,8 +124,13 @@ exports.writeChangesToDB = (callback) ->
     out = _.map todos, (t) ->
       projects = _.map t.projects or [], (i) -> "+#{i}"
       contexts = _.map t.contexts or [], (i) -> "@#{i}"
+      x = t.complete and "x"
+      if t.date
+        date = new Date(t.date).toISOString().substring(0, 10);
+      else
+        date = ""
 
-      _.compact([t.date, t.text, projects, contexts]).join " "
+      _.compact([x, date, t.text, projects, contexts]).join " "
 
     # then, write to file
     fs.writeFile filename, out.join "\n", (err) ->
