@@ -1,6 +1,7 @@
 fs = require "fs"
 _ = require "underscore"
 List = require "../../models/list"
+request = require "request"
 
 todotxt = (require "jstodotxt").TodoTxt
 todos = []
@@ -74,6 +75,8 @@ exports.update = (req, res) ->
   delete body.__v
   if body.complete
     body.date = (new Date()).toString()
+  else
+    body.date = null
 
   List.update {_id: req.params.id}, body, (err, d) ->
     exports.writeChangesToDB()
@@ -134,6 +137,23 @@ exports.writeChangesToDB = (callback) ->
         date = ""
 
       _.compact([x, date, t.text, projects, contexts]).join " "
+
+    # get item count for today
+    allCount = 0
+    for item in todos
+      if item.complete
+        allCount += 1
+    console.log "allcount", allCount/todos.length
+
+    # curl https://api.spark.io/v1/devices/54ff6c06678574921460267/analogWrite -d access_token=57e9b03711f56cdd56c6e2200c5cf8f778b0d4c5 -d params=A0,100
+    request
+      url: "https://api.spark.io/v1/devices/54ff6c066678574921460267/analogWrite"
+      params:
+        access_token: "57e9b03711f56cdd56c6e2200c5cf8f778b0d4c5"
+        args: "A0,250"
+      method: "get",
+      (e, d, r) ->
+        console.log d
 
     # then, write to file
     fs.writeFile filename, out.join "\n", (err) ->

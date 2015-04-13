@@ -1,0 +1,21 @@
+p {
+  margin: 20px;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+  margin: 50px;
+
+ul {
+  max-width: 660px;
+  margin: 0 auto;
+}
+
+.btn btn-defualt{
+  margin: 50px;
+}
+
+.transp {
+  background: transparent;
+}
