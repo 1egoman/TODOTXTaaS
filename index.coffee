@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 app = (require "express")()
 list = require "./controller/list"
 todotxt = (require "jsTodoTxt").TodoTxt
 
 bodyparser = require "body-parser"
 app.use bodyparser.json()
+=======
+fs = require "fs"
+app = (require "express")()
+bodyParser = require "body-parser"
+app.use(bodyParser.json());
+>>>>>>> 7e5a4f6827dd87cefbceaeb4f69419c83bebaf3d
 
 # connect to db
 mongoose = require "mongoose"
@@ -14,6 +21,7 @@ mongoose.connection.on('error', console.error.bind(console, 'db error:'))
 mongoose.connection.once 'open', () ->
   console.log("Connected To Mongo instance:", host)
 
+<<<<<<< HEAD
 
 ### CREATE ###
 
@@ -68,3 +76,26 @@ app.listen process.env.PORT or 8000
 
 
 
+=======
+app.use require("express-static")(__dirname+"/www")
+
+# resources
+listItems = require './controllers/list-items'
+# listItems.populateCache();
+app.get("/items", listItems.index)
+# app.get("/items/new", listItems.new)
+# app.get("/items/:item/edit", listItems.edit)
+app.get("/items/([\w\/\@\+]*)", listItems.show)
+app.post("/items", listItems.create)
+# app.put("/items/([\w\/\@\+]*)", listItems.update)
+app.put("/items/:id", listItems.update)
+app.delete("/items/:item", listItems.destroy)
+
+app.get "/todo.txt", (req, res) ->
+  fs.readFile "./todo.txt", 'utf8', (err, data) ->
+    res.setHeader "content-type", "text/plain"
+    res.send data
+
+# listen for server response
+app.listen(process.env.PORT || 8005)
+>>>>>>> 7e5a4f6827dd87cefbceaeb4f69419c83bebaf3d
