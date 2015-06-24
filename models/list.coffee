@@ -1,4 +1,5 @@
 todotxt = (require "jsTodoTxt").TodoTxt
+todotxt = (require "jsTodoTxt").TodoTxt
 mongoose = require "mongoose"
 
 s = mongoose.Schema

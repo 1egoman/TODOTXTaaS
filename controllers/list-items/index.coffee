@@ -23,6 +23,7 @@ sanitize = (obj) ->
 # show all todos in the list
 exports.index = (req, res) ->
   List.find (err, data) ->
+
     res.setHeader "content-type", "application/json"
     res.send
       data: data,
@@ -33,7 +34,7 @@ exports.new = (req, res) ->
 
 # add new todo item to list
 exports.create = (req, res) ->
-  item = todotxt.parse req.body
+  item = todotxt.parse req.body.data
   todos.push item
 
   i = new List sanitize(item[0])
@@ -68,7 +69,14 @@ exports.edit = (req, res) ->
 #
 # not what I wanted, but tough.
 exports.update = (req, res) ->
-  List.update req.param.id, req.body, (err, d) ->
+  body = req.body
+  delete body._id
+  delete body.__v
+  if body.complete
+    body.date = (new Date()).toString()
+
+  List.update {_id: req.params.id}, body, (err, d) ->
+    exports.writeChangesToDB()
     res.send
       data: d
       error: err
@@ -76,6 +84,7 @@ exports.update = (req, res) ->
 
 exports.destroy = (req, res) ->
   List.delete req.param.item, req.body, (err, d) ->
+    exports.writeChangesToDB()
     res.send
       data: d
       error: err
@@ -108,11 +117,27 @@ exports.select = (selectors, todos=@todos) ->
   matches
 
 # update database and todo.txt file from local cache
-exports.writeChangesToDB = (todos, callback) ->
-  filename = process.env.TODOTXTFILENAME or "todo.txt"
-  # also, write to file
-  fs.writeFile filename, todotxt.render(todos), (err) ->
-    callback err
+exports.writeChangesToDB = (callback) ->
+  List.find (err, todos) ->
+    filename = process.env.TODOTXTFILENAME or "todo.txt"
+
+    todos = (t.toObject() for t in todos)
+
+    # render it out
+    out = _.map todos, (t) ->
+      projects = _.map t.projects or [], (i) -> "+#{i}"
+      contexts = _.map t.contexts or [], (i) -> "@#{i}"
+      x = t.complete and "x"
+      if t.date
+        date = new Date(t.date).toISOString().substring(0, 10);
+      else
+        date = ""
+
+      _.compact([x, date, t.text, projects, contexts]).join " "
+
+    # then, write to file
+    fs.writeFile filename, out.join "\n", (err) ->
+      callback err if callback
 
 # import the todo.txt file to local cache
 exports.populateCache = () ->

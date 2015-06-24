@@ -30,6 +30,8 @@ Update
 - `PUT http://127.0.0.1:8000/lists/@abc.json`
 - `PUT http://127.0.0.1:8000/lists/@abc/+def.json`
 
+NOTE: date is only set once items are completed
+
 ### GET /items
 Outputs the full todo.txt file.
 ```
