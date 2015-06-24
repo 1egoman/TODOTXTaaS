@@ -14,7 +14,6 @@ mongoose.connection.on('error', console.error.bind(console, 'db error:'))
 mongoose.connection.once 'open', () ->
   console.log("Connected To Mongo instance:", host)
 
-
 ### CREATE ###
 
 # get all lists items
@@ -68,3 +67,17 @@ app.listen process.env.PORT or 8000
 
 
 
+# resources
+listItems = require './controllers/list-items'
+# listItems.populateCache();
+app.get("/items", listItems.index)
+# app.get("/items/new", listItems.new)
+# app.get("/items/:item/edit", listItems.edit)
+app.get("/items/([\w\/\@\+]*)", listItems.show)
+app.post("/items", listItems.create)
+# app.put("/items/([\w\/\@\+]*)", listItems.update)
+app.put("/items/:id", listItems.update)
+app.delete("/items/:item", listItems.destroy)
+
+# listen for server response
+app.listen(process.env.PORT || 8005)
